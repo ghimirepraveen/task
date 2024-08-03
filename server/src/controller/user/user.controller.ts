@@ -7,6 +7,7 @@ import { validateEmail } from "../../util/validate";
 import { validatePassword } from "../../util/validate";
 import jwt from "jsonwebtoken";
 import { sendResetPasswordEmail } from "../../util/sendEmail";
+import { JWT_SECRET, COOKIES_NAME } from "../../config/key";
 
 export const user = {
   register: asyncCatch(
@@ -72,7 +73,7 @@ export const user = {
     }
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name },
-      process.env.JWT_SECRET as string,
+      JWT_SECRET as string,
       {
         expiresIn: "24h",
       }
@@ -89,7 +90,7 @@ export const user = {
     res
       .status(200)
       .cookie(
-        process.env.COOKIES_NAME as string,
+        COOKIES_NAME as string,
         JSON.stringify({ token, user: sanitizedUser }),
         {
           path: "/",
@@ -112,7 +113,7 @@ export const user = {
     async (req: Request, res: Response, next: NextFunction) => {
       res
         .status(200)
-        .clearCookie(process.env.COOKIES_NAME as string)
+        .clearCookie(COOKIES_NAME as string)
         .json({ message: "logout successfully" });
     }
   ),
@@ -157,11 +158,9 @@ export const user = {
       throw new customError("User not found", 404);
     }
 
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET_KEY as string,
-      { expiresIn: "10m" }
-    );
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET as string, {
+      expiresIn: "10m",
+    });
 
     await sendResetPasswordEmail(email, token);
 
@@ -180,7 +179,7 @@ export const user = {
     }
     let decodedToken;
     try {
-      decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+      decodedToken = jwt.verify(token, JWT_SECRET as string);
     } catch (err) {
       throw new customError("Invalid or expired token", 401);
     }

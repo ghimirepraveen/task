@@ -1,12 +1,13 @@
 require("dotenv").config();
 import { google } from "googleapis";
 import nodemailer from "nodemailer";
-
-const CLIENT_ID = process.env.CLIENT_ID as string;
-const CLIENT_SECRET = process.env.CLIENT_SECRET as string;
-const REDIRECT_URI = process.env.REDIRECT_URI as string;
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN as string;
-const USER_EMAIL = process.env.USER_EMAIL as string;
+import {
+  CLIENT_SECRET,
+  CLIENT_ID,
+  REDIRECT_URI,
+  REFRESH_TOKEN,
+  USER_EMAIL,
+} from "../config/key";
 
 const createTransporter = async () => {
   try {
@@ -46,7 +47,7 @@ const createTransporter = async () => {
 
 export const sendResetPasswordEmail = async (email: string, token: string) => {
   const emailConfig = {
-    from: process.env.USER_EMAIL,
+    from: USER_EMAIL,
     to: email,
     subject: "Reset Password",
     html: `<h1>Reset Your Password</h1>

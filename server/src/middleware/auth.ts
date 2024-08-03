@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import CustomError from "../error/custome.error";
+import { JWT_SECRET } from "../config/key";
 
 declare global {
   namespace Express {
@@ -18,7 +19,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     throw new Error("Not authorized");
   }
 
-  const user: any = jwt.verify(token, process.env.JWT_SECRET as string);
+  const user: any = jwt.verify(token, JWT_SECRET as string);
 
   req.user = user;
 
