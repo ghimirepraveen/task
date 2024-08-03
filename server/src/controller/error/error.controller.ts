@@ -11,7 +11,7 @@ export default function errorHandler(
   next: NextFunction
 ) {
   err.message = err.message || "something went wrong";
-  err.statusCode = err.statusCode || 400;
+  err.statusCode = err.statusCode || 500;
   return res
     .status(err.statusCode)
     .json({ status: err.statusCode, error: err.message });
