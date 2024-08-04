@@ -8,8 +8,6 @@ import { stringToBoolean } from "../../util/stringtoboolen";
 export const post = {
   create: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      //   const title = req.body.title as string;
-      //   const content = req.body.content as string;
       const published = stringToBoolean(req.body.published);
       const userId = req.user.id;
 
@@ -42,7 +40,7 @@ export const post = {
     }
   ),
 
-  getPosts: asyncCatch(
+  getAll: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
       const posts = await prisma.post.findMany({
         where: {
@@ -83,7 +81,21 @@ export const post = {
     async (req: Request, res: Response, next: NextFunction) => {
       const postId = req.params.id;
 
-      const post = await prisma.post.update({
+      const post = await prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
+
+      if (!post) {
+        throw new customError("post not found", 404);
+      }
+
+      if (post.authorId !== req.user.id) {
+        throw new customError("Not authorized", 403);
+      }
+
+      const publishPost = await prisma.post.update({
         where: {
           id: postId,
         },
@@ -92,7 +104,7 @@ export const post = {
         },
       });
 
-      res.status(200).json(post);
+      res.status(200).json(publishPost);
     }
   ),
 
@@ -101,6 +113,7 @@ export const post = {
       const postId = req.params.id;
       const title = req.body.title as string;
       const content = req.body.content as string;
+
       const published = stringToBoolean(req.body.published);
 
       if (!title || !content) {
@@ -109,6 +122,20 @@ export const post = {
 
       let imgUrl;
       if (req.file) imgUrl = await uploadPhoto(req.file);
+
+      const post = await prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
+
+      if (!post) {
+        throw new customError("post not found", 404);
+      }
+
+      if (post.authorId !== req.user.id) {
+        throw new customError("Not authorized", 403);
+      }
 
       const updateData: any = {
         title,
@@ -144,6 +171,24 @@ export const post = {
   delete: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
       const postId = req.params.id;
+
+      const post = await prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
+
+      if (!post) {
+        throw new customError("post not found", 404);
+      }
+
+      if (post.authorId !== req.user.id) {
+        throw new customError("Not authorized", 403);
+      }
+
+      await prisma.img.deleteMany({
+        where: { postId: postId },
+      });
 
       await prisma.post.delete({
         where: {
