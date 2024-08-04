@@ -43,7 +43,6 @@ export const user = {
         updatedAt,
         ...userdata
       } = user;
-      console.log(userdata);
 
       res.status(201).json(userdata);
     }
@@ -166,7 +165,8 @@ export const user = {
 
     res.status(200).json({
       message: `Email sent to ${email}`,
-      resetLink: `http://localhost:4000/api/user/resetpassword/${token}`,
+      resetLink_DEVELOPMENT: `http://localhost:4000/api/user/resetpassword/${token}`,
+      resetLink_PRODUCTION: `https://task-fdml.onrender.com/api/user/resetpassword/${token}`,
     });
   }),
 

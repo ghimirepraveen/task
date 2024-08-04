@@ -49,7 +49,9 @@ export const post = {
           published: true,
         },
         include: {
-          imgs: true,
+          imgs: {
+            where: { isactive: true },
+          },
         },
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -87,7 +89,9 @@ export const post = {
           published: true,
         },
         include: {
-          imgs: true,
+          imgs: {
+            where: { isactive: true },
+          },
         },
       });
 
@@ -183,7 +187,9 @@ export const post = {
         where: { id: postId },
         data: updateData,
         include: {
-          imgs: true,
+          imgs: {
+            where: { isactive: true },
+          },
         },
       });
       res.status(200).json(updatedPost);
