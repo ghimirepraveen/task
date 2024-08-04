@@ -10,7 +10,7 @@ userRouter.post("/forgotpassword", user.forgetPassword);
 userRouter.post("/resetpassword/:token", user.resetPassword);
 
 userRouter.use(auth);
-userRouter.post("/changePassword", user.changePassword);
+userRouter.post("/changepassword", user.changePassword);
 userRouter.put("/update", user.update);
 userRouter.get("/me", user.me);
 userRouter.post("/logout", user.logout);

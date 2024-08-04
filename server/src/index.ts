@@ -7,6 +7,7 @@ import errorHandler from "./controller/error/error.controller";
 import { PORT } from "./config/key";
 import { prisma } from "./model/db";
 import userRouter from "./routes/user.routes";
+import postRouter from "./routes/blog.routes";
 
 dontenv.config();
 
@@ -19,6 +20,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 app.use("/api/user", userRouter);
+app.use("/api/post", postRouter);
 
 app.use(errorHandler);
 

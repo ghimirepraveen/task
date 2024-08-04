@@ -1,13 +1,11 @@
 require("dotenv").config();
 import { google } from "googleapis";
 import nodemailer from "nodemailer";
-import {
-  CLIENT_SECRET,
-  CLIENT_ID,
-  REDIRECT_URI,
-  REFRESH_TOKEN,
-  USER_EMAIL,
-} from "../config/key";
+
+const CLIENT_ID = process.env.CLIENT_ID as string;
+const CLIENT_SECRET = process.env.CLIENT_SECRET as string;
+const REDIRECT_URI = process.env.REDIRECT_URI as string;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN as string;
 
 const createTransporter = async () => {
   try {
@@ -26,12 +24,13 @@ const createTransporter = async () => {
         resolve(token as string);
       });
     });
+    console.log(`Access Token: ${accessToken}`);
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         type: "OAuth2",
-        user: USER_EMAIL,
+        user: process.env.USER_EMAIL,
         clientId: CLIENT_ID,
         clientSecret: CLIENT_SECRET,
         refreshToken: REFRESH_TOKEN,
@@ -46,14 +45,16 @@ const createTransporter = async () => {
 };
 
 export const sendResetPasswordEmail = async (email: string, token: string) => {
-  console.log(`http://localhost:4000/api/user/resetpassword/${token}`);
+  const resetLink = `http://localhost:4000/api/user/resetpassword/${token}`;
+  console.log(`Reset password link: ${resetLink}`);
+
   const emailConfig = {
-    from: USER_EMAIL,
+    from: process.env.USER_EMAIL,
     to: email,
     subject: "Reset Password",
     html: `<h1>Reset Your Password</h1>
            <p>Click on the following link to reset your password:</p>
-           <a href="http://localhost:4000/api/user/resetpassword/${token}">Reset Password</a>
+           <a href=${resetLink}>Reset Password</a>
            <p>The link will expire in 10 minutes.</p>
            <p>If you didn't request a password reset, please ignore this email.</p>`,
   };
