@@ -4,3 +4,11 @@
 dist 
 
 node_modules
+
+migration
+prisma/migration
+
+
+./prisma/migration
+
+s

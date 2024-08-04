@@ -39,9 +39,11 @@ export const post = {
       res.status(201).json(blog);
     }
   ),
-
   getAll: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = 6;
+
       const posts = await prisma.post.findMany({
         where: {
           published: true,
@@ -49,9 +51,29 @@ export const post = {
         include: {
           imgs: true,
         },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        orderBy: {
+          createdAt: "desc",
+        },
       });
 
-      res.status(200).json(posts);
+      const totalPosts = await prisma.post.count({
+        where: {
+          published: true,
+        },
+      });
+
+      const totalPages = Math.ceil(totalPosts / pageSize);
+
+      res.status(200).json({
+        posts,
+        meta: {
+          totalPosts,
+          totalPages,
+          currentPage: page,
+        },
+      });
     }
   ),
 
