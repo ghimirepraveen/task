@@ -141,7 +141,7 @@ export const user = {
         updatedAt: undefined,
       };
 
-      res.status(200).json(user);
+      res.status(200).json(sanitizedUser);
     }
   ),
 
@@ -166,6 +166,7 @@ export const user = {
 
     res.status(200).json({ message: "Email sent" });
   }),
+
   resetPassword: asyncCatch(async (req: Request, res: Response) => {
     const { token } = req.params;
     const { newPassword, verifiedPassword } = req.body;

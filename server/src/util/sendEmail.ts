@@ -46,13 +46,14 @@ const createTransporter = async () => {
 };
 
 export const sendResetPasswordEmail = async (email: string, token: string) => {
+  console.log(`http://localhost:4000/api/user/resetpassword/${token}`);
   const emailConfig = {
     from: USER_EMAIL,
     to: email,
     subject: "Reset Password",
     html: `<h1>Reset Your Password</h1>
            <p>Click on the following link to reset your password:</p>
-           <a href="http:localhost//4000/resetpassword">Reset Password</a>
+           <a href="http://localhost:4000/api/user/resetpassword/${token}">Reset Password</a>
            <p>The link will expire in 10 minutes.</p>
            <p>If you didn't request a password reset, please ignore this email.</p>`,
   };
