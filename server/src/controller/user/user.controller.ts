@@ -164,7 +164,10 @@ export const user = {
 
     await sendResetPasswordEmail(email, token);
 
-    res.status(200).json({ message: "Email sent" });
+    res.status(200).json({
+      message: `Email sent to ${email}`,
+      resetLink: `http://localhost:4000/api/user/resetpassword/${token}`,
+    });
   }),
 
   resetPassword: asyncCatch(async (req: Request, res: Response) => {
@@ -200,7 +203,9 @@ export const user = {
       data: { password: hashedPassword },
     });
 
-    res.status(200).json({ message: "Password updated" });
+    res.status(200).json({
+      message: "Password updated",
+    });
   }),
 
   changePassword: asyncCatch(async (req: Request, res: Response) => {

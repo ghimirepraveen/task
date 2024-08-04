@@ -1,11 +1,13 @@
 require("dotenv").config();
 import { google } from "googleapis";
 import nodemailer from "nodemailer";
-
-const CLIENT_ID = process.env.CLIENT_ID as string;
-const CLIENT_SECRET = process.env.CLIENT_SECRET as string;
-const REDIRECT_URI = process.env.REDIRECT_URI as string;
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN as string;
+import {
+  CLIENT_SECRET,
+  CLIENT_ID,
+  REFRESH_TOKEN,
+  USER_EMAIL,
+  REDIRECT_URI,
+} from "../config/key";
 
 const createTransporter = async () => {
   try {
@@ -24,13 +26,12 @@ const createTransporter = async () => {
         resolve(token as string);
       });
     });
-    console.log(`Access Token: ${accessToken}`);
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         type: "OAuth2",
-        user: process.env.USER_EMAIL,
+        user: USER_EMAIL,
         clientId: CLIENT_ID,
         clientSecret: CLIENT_SECRET,
         refreshToken: REFRESH_TOKEN,
@@ -46,7 +47,6 @@ const createTransporter = async () => {
 
 export const sendResetPasswordEmail = async (email: string, token: string) => {
   const resetLink = `http://localhost:4000/api/user/resetpassword/${token}`;
-  console.log(`Reset password link: ${resetLink}`);
 
   const emailConfig = {
     from: process.env.USER_EMAIL,
