@@ -126,7 +126,7 @@ export const post = {
           id: postId,
         },
         data: {
-          published: true,
+          published: !post.published,
         },
       });
 
